@@ -13,7 +13,8 @@ data class DadJokeIndexState(
     /** We use this request to store the list of all jokes. */
     val jokes: List<Joke> = emptyList(),
     /** We use this Async to keep track of the state of the current network request. */
-    val request: Async<JokesResponse> = Uninitialized
+    val request: Async<JokesResponse> = Uninitialized,
+    val isShowRows: Boolean = true
 ) : MavericksState
 
 /**
@@ -28,12 +29,19 @@ class DadJokeIndexViewModel(
         fetchNextPage()
     }
 
+    // 防止重复请求
     fun fetchNextPage() = withState { state ->
         if (state.request is Loading) return@withState
 
         suspend {
             dadJokeService.search(page = state.jokes.size / JOKES_PER_PAGE + 1, limit = JOKES_PER_PAGE)
         }.execute { copy(request = it, jokes = jokes + (it()?.results ?: emptyList())) }
+    }
+
+    fun hideRows() {
+        setState {
+            copy(isShowRows = false)
+        }
     }
 
     /**

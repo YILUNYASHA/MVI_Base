@@ -4,12 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.airbnb.mvrx.fragmentViewModel
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyRecyclerView
-import com.airbnb.mvrx.existingViewModel
-import com.airbnb.mvrx.fragmentViewModel
-import com.airbnb.mvrx.withState
+import com.airbnb.mvrx.*
 import com.example.myapplication.R
 import com.example.myapplication.core.BaseFragment
 import com.example.myapplication.databinding.DadJokeIndexFragmentBinding
@@ -31,6 +28,7 @@ class DadJokeIndexFragment : BaseFragment(R.layout.dad_joke_index_fragment) {
             onFail = {
                 Snackbar.make(binding.root, "Jokes request failed.", Snackbar.LENGTH_INDEFINITE).show()
             },
+            onSuccess = {},
         )
     }
 
@@ -41,6 +39,7 @@ class DadJokeIndexFragment : BaseFragment(R.layout.dad_joke_index_fragment) {
                 controller.buildModels()
             }
         })
+        binding.toolbar.setOnClickListener { viewModel.hideRows() }
     }
 
     override fun invalidate() {
@@ -52,15 +51,17 @@ class DadJokeIndexFragment : BaseFragment(R.layout.dad_joke_index_fragment) {
             basicRow {
                 id(joke.id)
                 title(joke.joke)
+                clickListener { v-> }
             }
         }
 
-        loadingRow {
-            // Changing the ID will force it to rebind when new data is loaded even if it is
-            // still on screen which will ensure that we trigger loading again.
-            id("loading${state.jokes.size}")
-            onBind { _, _, _ -> viewModel.fetchNextPage() }
-        }
+        if (state.isShowRows)
+            loadingRow {
+                // Changing the ID will force it to rebind when new data is loaded even if it is
+                // still on screen which will ensure that we trigger loading again.
+                id("loading${state.jokes.size}")
+                onBind { _, _, _ -> viewModel.fetchNextPage() }
+            }
     }
 
 }

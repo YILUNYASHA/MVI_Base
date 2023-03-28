@@ -22,8 +22,7 @@ import com.example.myapplication.views.marquee
 
 class TestFragment : BaseFragment(R.layout.fragment_test) {
     private val binding: FragmentTestBinding by viewBinding()
-    private val viewModel: RandomDadJokeViewModel by parentFragmentViewModel()
-
+    private val viewModel: RandomDadJokeViewModel by fragmentViewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -2,6 +2,7 @@ package com.example.myapplication.core
 
 import android.app.Application
 import com.airbnb.mvrx.Mavericks
+import com.airbnb.mvrx.navigation.DefaultNavigationViewModelDelegateFactory
 import com.example.myapplication.network.RemoteService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -15,7 +16,7 @@ class MvRxApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Mavericks.initialize(this)
+        Mavericks.initialize(this, viewModelDelegateFactory = DefaultNavigationViewModelDelegateFactory())
         GlobalContext.startKoin {
             androidContext(this@MvRxApplication)
             modules(dadJokeServiceModule)
